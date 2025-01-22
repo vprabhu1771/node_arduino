@@ -35,6 +35,29 @@ arduinoPort.on('open', () => {
     console.log(`Serial Port ${portName} is opened`);
 });
 
+// Route to trigger LED blink
+app.post('/blink-led', (req, res) => {
+  
+    const { blink } = req.body;  // Extract the blink value from the request body
+    
+    console.log(req.body);
+    
+    if (blink === '1') 
+    {
+      arduinoPort.write('1');  // Send signal to Arduino to turn LED on
+      return res.send('LED is turned ON');
+    } 
+    else if (blink === '0') 
+    {
+      arduinoPort.write('0');  // Send signal to Arduino to turn LED off
+      return res.send('LED is turned OFF');
+    } 
+    else 
+    {
+      return res.status(400).send('Invalid value for blink. Use "0" to turn off and "1" to turn on.');
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running on http://${host}:${port}`);
 });
